@@ -13,8 +13,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 
 @Entity
 @Table(name="CATEGORIA")
@@ -29,13 +27,9 @@ public class Categoria implements Serializable{
 	@NotBlank(message = "Nome é uma informação obrigatória.")
 	private String nome;
 	
-	@JsonManagedReference
-	@ManyToMany(mappedBy="categoria")
+	@ManyToMany(mappedBy="categorias")
 	private List<Beneficiario> beneficiarios = new ArrayList<>();
 	
-	@JsonManagedReference
-	@ManyToMany(mappedBy="categorias")
-	private List<Campanha> campanhas = new ArrayList<>();
 	
 	public Categoria() {
 		

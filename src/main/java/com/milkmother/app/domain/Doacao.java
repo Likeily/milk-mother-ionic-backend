@@ -2,6 +2,8 @@ package com.milkmother.app.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,7 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Doacao implements Serializable{
@@ -19,19 +25,21 @@ public class Doacao implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	
+	@JsonFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date instante;
 
 	@OneToOne(cascade=CascadeType.ALL, mappedBy="doacao")
 	private Pagamento pagamento;
 	
 	@ManyToOne
-	@JoinColumn(name="campanha_id")
-	private Campanha campanha;
-
-	@ManyToOne
 	@JoinColumn(name="usuario_id")
 	private Usuario usuario;
 
+	@JsonIgnore
+	@OneToMany(mappedBy="id.doacao")
+	private Set<DoacaoSelecionada> itens = new HashSet<>();
+	
 	public Doacao() {
 	}
 
@@ -74,12 +82,13 @@ public class Doacao implements Serializable{
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	public Campanha getCampanha() {
-		return campanha;
+	
+	public Set<DoacaoSelecionada> getItens() {
+		return itens;
 	}
 
-	public void setCampanha(Campanha campanha) {
-		this.campanha = campanha;
+	public void setItens(Set<DoacaoSelecionada> itens) {
+		this.itens = itens;
 	}
 
 	@Override

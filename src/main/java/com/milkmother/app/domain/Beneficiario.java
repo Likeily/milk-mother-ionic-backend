@@ -2,7 +2,9 @@ package com.milkmother.app.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,34 +15,35 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.milkmother.app.enums.TipoBeneficiario;
 
 @Entity
-public class Beneficiario implements Serializable{
+public class Beneficiario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
 	private Double valorParaDoacao;
 	private String Cpf;
 	private Integer tipo;
-	
-	@JsonBackReference
+
+	@JsonIgnore
 	@ManyToMany
-	@JoinTable(name="BENEFICIARIO_CATEGORIA",
-		joinColumns = @JoinColumn(name="BENEFICIARIO_ID"),
-		inverseJoinColumns = @JoinColumn(name="CATEGORIA_ID")
-	)
-	private List<Categoria> categoria = new ArrayList<>();
+	@JoinTable(name = "BENEFICIARIO_CATEGORIA", 
+			   joinColumns = @JoinColumn(name = "BENEFICIARIO_ID"), 
+			   inverseJoinColumns = @JoinColumn(name = "CATEGORIA_ID"))
+	private List<Categoria> categorias = new ArrayList<>();
+
+	@OneToMany(mappedBy="id.beneficiario")
+	private Set<DoacaoSelecionada> itens = new HashSet<>();
 	
-	@JsonManagedReference
-	@OneToMany(mappedBy="beneficiario")
+	@OneToMany(mappedBy = "beneficiario")
 	private List<Endereco> enderecos = new ArrayList<>();
-	
+
+
 	public Beneficiario() {
 	}
 
@@ -51,6 +54,19 @@ public class Beneficiario implements Serializable{
 		this.valorParaDoacao = valorParaDoacao;
 		Cpf = cpf;
 		this.tipo = tipo.getCodi();
+	}
+	
+	//O beneficiario conhece suas doações então.
+	//o get varre as doações identificando as doações do usuario.
+	//Ignorar essa função para as doações não serem serializadas.
+	@JsonIgnore
+	public List<Doacao> getDoacaos(){
+		List<Doacao> listar = new ArrayList<>();
+		for (DoacaoSelecionada x : itens) {
+			listar.add(x.getDoacao());
+		}
+		return listar;
+	
 	}
 
 	public Integer getId() {
@@ -69,14 +85,6 @@ public class Beneficiario implements Serializable{
 		this.nome = nome;
 	}
 
-	public Double getValorParaDoacao() {
-		return valorParaDoacao;
-	}
-
-	public void setValorParaDoacao(Double valorParaDoacao) {
-		this.valorParaDoacao = valorParaDoacao;
-	}
-
 	public String getCpf() {
 		return Cpf;
 	}
@@ -85,25 +93,44 @@ public class Beneficiario implements Serializable{
 		Cpf = cpf;
 	}
 
-	public List<Categoria> getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(List<Categoria> categoria) {
-		this.categoria = categoria;
-	}
 	public TipoBeneficiario getTipo() {
 		return TipoBeneficiario.toEnum(tipo);
 	}
+
 	public void setTipo(TipoBeneficiario tipo) {
 		this.tipo = tipo.getCodi();
 	}
+
 	public List<Endereco> getEnderecos() {
 		return enderecos;
 	}
 
 	public void setEnderecos(List<Endereco> enderecos) {
 		this.enderecos = enderecos;
+	}
+
+	public Double getValorParaDoacao() {
+		return valorParaDoacao;
+	}
+
+	public void setValorParaDoacao(Double valorParaDoacao) {
+		this.valorParaDoacao = valorParaDoacao;
+	}
+
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
+	}
+
+	public Set<DoacaoSelecionada> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<DoacaoSelecionada> itens) {
+		this.itens = itens;
 	}
 
 	@Override

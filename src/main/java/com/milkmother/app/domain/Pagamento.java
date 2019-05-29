@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.milkmother.app.enums.EstadoPagamento;
 
 @Entity
@@ -22,6 +23,8 @@ public class Pagamento implements Serializable{
 	private Integer estado;
 	
 	//Garante que o Id é o mesmo que será gerado na Doação
+	//Associações resolvidas
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="doacao_id")
 	@MapsId
