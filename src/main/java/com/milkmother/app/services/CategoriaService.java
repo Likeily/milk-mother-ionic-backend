@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.milkmother.app.domain.Categoria;
+import com.milkmother.app.dto.CategoriaDTO;
 import com.milkmother.app.repositories.CategoriaRepository;
 import com.milkmother.app.services.exceptions.DataIntegrityException;
 import com.milkmother.app.services.exceptions.ObjectNotFoundException;
@@ -58,6 +59,10 @@ public class CategoriaService {
 	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repositori.findAll(pageRequest);
+	}
+	
+	public Categoria fromDTO(CategoriaDTO objDto) {
+		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 	
 }
