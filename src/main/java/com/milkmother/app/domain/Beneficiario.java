@@ -23,7 +23,7 @@ public class Beneficiario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	private String nome;
 	private Double valorParaDoacao;
@@ -40,7 +40,7 @@ public class Beneficiario implements Serializable {
 	@OneToMany(mappedBy="id.beneficiario")
 	private Set<DoacaoSelecionada> itens = new HashSet<>();
 	
-	@OneToMany(mappedBy = "beneficiario")
+	@OneToMany(mappedBy="usuario")
 	private List<Endereco> enderecos = new ArrayList<>();
 
 
@@ -53,7 +53,7 @@ public class Beneficiario implements Serializable {
 		this.nome = nome;
 		this.valorParaDoacao = valorParaDoacao;
 		Cpf = cpf;
-		this.tipo = tipo.getCodi();
+		this.tipo = (tipo==null) ? null : tipo.getCodi();
 	}
 	
 	//O beneficiario conhece suas doações então.
@@ -101,14 +101,6 @@ public class Beneficiario implements Serializable {
 		this.tipo = tipo.getCodi();
 	}
 
-	public List<Endereco> getEnderecos() {
-		return enderecos;
-	}
-
-	public void setEnderecos(List<Endereco> enderecos) {
-		this.enderecos = enderecos;
-	}
-
 	public Double getValorParaDoacao() {
 		return valorParaDoacao;
 	}
@@ -131,6 +123,14 @@ public class Beneficiario implements Serializable {
 
 	public void setItens(Set<DoacaoSelecionada> itens) {
 		this.itens = itens;
+	}
+	
+	public List<Endereco> getEnderecos() {
+		return enderecos;
+	}
+	
+	public void setEnderecos(List<Endereco> enderecos) {
+		this.enderecos = enderecos;
 	}
 
 	@Override
